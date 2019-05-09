@@ -1,5 +1,9 @@
 # Mothers Day 2019
 
+## v0.0.5a
+* Better switching mechanics.
+* Added switch sound.
+
 ## v0.0.4a
 * Cycling and on / off works better.
 
@@ -15,3 +19,4 @@
 * 3D on/off switch?
 * Switch sounds.
 * <a href="https://stackoverflow.com/questions/50948014/emit-light-from-an-object">Bloom?</a> 
+* Vertical oscillation.

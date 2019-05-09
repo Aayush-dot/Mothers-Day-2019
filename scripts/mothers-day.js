@@ -119,6 +119,9 @@ if (AXES_HELPER) {
     scene.add(axesHelper);    
 }
 
+
+var M1, O1, M2;
+
 // load Mother's Day light-up sign model
 var loader = new THREE.GLTFLoader();
 loader.load('models/mothers-day.glb',
@@ -141,12 +144,16 @@ function(gltf) {
     crossCube.position.set(0, 0, 0);
 */
     
-    scene.getObjectByName('M1').rotation.set(Math.PI / 2, 0, -.2);
-    scene.getObjectByName('O1').rotation.set(Math.PI / 2, 0, 0);
-    scene.getObjectByName('M2').rotation.set(Math.PI / 2, 0, .2);
+    M1 = scene.getObjectByName('M1');
+    O1 = scene.getObjectByName('O1');
+    M2 = scene.getObjectByName('M2');
     
-    scene.getObjectByName('M1').position.y = -.2;
-    scene.getObjectByName('M1').position.z = .4;
+    M1.rotation.set(Math.PI / 2, 0, -.2);
+    O1.rotation.set(Math.PI / 2, 0, 0);
+    M2.rotation.set(Math.PI / 2, 0, .2);
+    
+    M1.position.y = -.2;
+    M1.position.z = .4;
 
 	document.querySelector('#load-message').style.display = 'none';
 
@@ -174,6 +181,7 @@ var t1 = new Date().getTime();
 var tick = 500; // tick interval
 var tickElapsed = 0;
 
+var startZ = 0.4;
 
 function animate() {
     requestAnimationFrame(animate);
@@ -188,6 +196,8 @@ function animate() {
         if (signOn && signCycle) blinkLights();
     }
     
+    startZ += 0.2;
+    // bobber function here.
    
     renderer.render(scene, camera);
 }
@@ -247,7 +257,7 @@ function setupLightsInitial() {
         pointLight.name = lights[x]+'-PointLight';
         light.add(pointLight);
         pointLight.position.y = 1;
-        console.log(pointLight.position.z);
+        //console.log(pointLight.position.z);
         //scene.add(new THREE.PointLightHelper(pointLight, 2));
     }
     
@@ -305,18 +315,26 @@ function notifyLoadFail() {
 	document.querySelector('#load-message').innerHTML = 'Scene failed to load. Refresh page and if that doesn\'t work, contact <a href="/">@SirKoik!</a>';
 }
 
+function playSound(sound) {
+    switch(sound) {
+        case 'switch' : document.getElementById('sound-switch').play(); break;
+    }
+}
+
 
 document.querySelector('#pause').onclick = function(e) {
+    playSound('switch');
     signOn = !signOn;
     if (signOn) {
         if (signCycle) setupBlink();
     } else {
-        signCycle = false;
+        //signCycle = false;
     }
     resetSign();
 }
 
 document.querySelector('#cycle').onclick = function(e) {
+    playSound('switch');
     signCycle = !signCycle;
     if (signCycle) {
         setupBlink()
