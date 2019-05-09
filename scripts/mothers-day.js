@@ -1,12 +1,13 @@
 const GROUND = -15;
 const DEFAULT_CAMERA_X = 0, DEFAULT_CAMERA_Y = 0, DEFAULT_CAMERA_Z = 5;
 const AMBIENT_ENABLED = false;
-const AXES_HELPER = true;
+const AXES_HELPER = false;
 
 var camera, renderer;
 var emitter;
 
-var animSpin = true;
+var signOn = true;
+var signCycle = true;
 var lookAtFace = false;
 
 // scene and camera.
@@ -149,7 +150,7 @@ function(gltf) {
 
 	document.querySelector('#load-message').style.display = 'none';
 
-    setupLights();
+    setupLightsInitial();
     
     //addSpotLight(true);
     
@@ -184,7 +185,7 @@ function animate() {
     // tick occurred
     if (tickElapsed >= tick) {  
         t0 = new Date().getTime();
-        blinkLights();
+        if (signOn && signCycle) blinkLights();
     }
     
    
@@ -218,15 +219,29 @@ var lights = [
 ];
 var even = true;
 
-function setupLights() {
+
+function setupBlink() {
+    for (var x = 0; x < lights.length; x++) {
+        var light = scene.getObjectByName(lights[x]);
+        light.lightIsOn = x % 2 == 0 && x != 1;
+        //light.material.emissiveIntensity = light.lightIsOn? 1 : 0;
+        
+        //var pointLight = scene.getObjectByName(lights[x]+'-PointLight');
+        //pointLight.intensity = light.lightIsOn? 1 : 0;
+    }
+}
+
+function setupLightsInitial() {
     for (var x = 0; x < lights.length; x++) {
         var light = scene.getObjectByName(lights[x]);
         
-        var emissiveColor = x % 2 == 0 && x != 1? new THREE.Color(0xffffff) : new THREE.Color(0x000000);
-        var emissiveColor = new THREE.Color(0xffffff);
-        var emissiveIntensity = x % 2 == 0 && x != 1? 1 : 0;
+        light.lightIsOn = x % 2 == 0 && x != 1;
+        //var emissiveColor = light.lightIsOn? new THREE.Color(0xffffff) : new THREE.Color(0x000000);
         
-        light.material = new THREE.MeshLambertMaterial({ color: 0x000000, emissive: emissiveColor, emissiveIntensity: emissiveIntensity });
+        //var emissiveColor = new THREE.Color(0xffffff);
+        var emissiveIntensity = light.lightIsOn? 1 : 0;
+        
+        light.material = new THREE.MeshLambertMaterial({ color: 0x000000, /*emissive: emissiveColor,*/ emissive: new THREE.Color(0xffffff), emissiveIntensity: emissiveIntensity });
         
         var pointLight = new THREE.PointLight(0xffffff, 1, 5);
         pointLight.name = lights[x]+'-PointLight';
@@ -252,14 +267,18 @@ function blinkLights() {
         var light = scene.getObjectByName(lights[x]);
         var pointLight = scene.getObjectByName(lights[x]+'-PointLight');
         
-        var lIntensity = light.material.emissiveIntensity;
+        var isOn = light.lightIsOn;
         
-        if (lIntensity == 0) {
-            light.material.emissiveIntensity = 1;
-            pointLight.intensity = 1;
-        } else {
+        if (isOn) {
             light.material.emissiveIntensity = 0;
             pointLight.intensity = 0;
+            
+            light.lightIsOn = false;
+        } else {
+            light.material.emissiveIntensity = 1;
+            pointLight.intensity = 1;
+            
+            light.lightIsOn = true;
         }
         //if (even && ) scene.getObjectByName(lights[x]).visible = x % 2 == 0 && x != 1;
         //if (!even) scene.getObjectByName(lights[x]).visible = x % 2 != 0 || x == 1;
@@ -267,6 +286,17 @@ function blinkLights() {
     
     even = !even;
 	//console.log('blinking lights.');
+}
+
+function resetSign() {
+    for (var x = 0; x < lights.length; x++) {
+        var light = scene.getObjectByName(lights[x]);
+        var pointLight = scene.getObjectByName(lights[x]+'-PointLight');
+        
+        var intensity = signOn? 1 : 0;
+        light.material.emissiveIntensity = intensity;
+        pointLight.intensity = intensity;
+    }    
 }
 
 function notifyLoadFail() {
@@ -277,7 +307,22 @@ function notifyLoadFail() {
 
 
 document.querySelector('#pause').onclick = function(e) {
-    animSpin = !animSpin;
+    signOn = !signOn;
+    if (signOn) {
+        if (signCycle) setupBlink();
+    } else {
+        signCycle = false;
+    }
+    resetSign();
+}
+
+document.querySelector('#cycle').onclick = function(e) {
+    signCycle = !signCycle;
+    if (signCycle) {
+        setupBlink()
+    } else {
+        resetSign();        
+    }
 }
 
 document.querySelector('#credits-link').onclick = function(e) {
