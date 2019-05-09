@@ -115,13 +115,14 @@ scene.add(cubeLight);
 var crossCube;
 
 var loader = new THREE.GLTFLoader();
-loader.load('models/mothers-day.gltf',
+loader.load('models/mothers-day.glb',
 function(gltf) {
     // loader callback
 
     // add gltf scene and make crossCube cast shadow from light
     
     scene.add(gltf.scene);
+/*
     crossCube = scene.getObjectByName('Cube777');
     //crossCube.castShadow = true;
     crossCube.receiveShadow = true;
@@ -131,21 +132,29 @@ function(gltf) {
     
     crossCube.scale.set(0.3, 0.3, 0.3);
     crossCube.position.set(0, 0, 0);
+*/
     //crossCube.
     
     //loadCandle();
+
+	document.querySelector('#load-message').style.display = 'none';
+
     animate();
 
 
 }, undefined, function(error) {
         console.error(error);
+	notifyLoadFail();
 });
+
+animate();
 
 var ctr= 0;
 var rotateDeg = 0.0;
 
-var t0, t1 = new Date().getTime();
-var tick = 1000;
+var t0 = new Date().getTime();
+var t1 = new Date().getTime();
+var tick = 1000; // tick interval
 
 function animate() {
     requestAnimationFrame(animate);
@@ -154,6 +163,7 @@ function animate() {
 
 t1 = new Date().getTime();
 // tick occurred
+
 if (t1 - t0 >= tick) {
 	t0 = new Date().getTime();
 	blinkLights();
@@ -165,6 +175,12 @@ if (t1 - t0 >= tick) {
 
 function blinkLights() {
 	console.log('blinking lights.');
+}
+
+function notifyLoadFail() {
+	document.querySelector('#load-message').classList.add('load-message-fail');
+	document.querySelector('#load-message').classList.remove('load-message');
+	document.querySelector('#load-message').innerHTML = 'Scene failed to load. Refresh page and if that doesn\'t work, contact <a href="/">@SirKoik!</a>';
 }
 
 

@@ -17,6 +17,45 @@ canvas:active {
     cursor: grabbing;
 }
 
+.loader {
+	z-index: 2;
+	position: fixed;
+	top: 0;
+	right: 0;
+	bottom: 0;
+	left: 0;
+
+	display: flex;
+	justify-content: center;
+	align-items: center;
+}
+
+@keyframes loadfader {
+	0% { color: #c0c0c0; }
+	50% { color: green; }
+	100% { color: #c0c0c0; }
+}
+
+.load-message {
+	font-size: 5vh;
+	color: green;
+	animation: loadfader 4s infinite;
+}
+
+@keyframes loadfaderfail {
+	0% { color: #c0c0c0; }
+	50% { color: red; }
+	100% { color: #c0c0c0; }
+}
+
+.load-message-fail {
+	background: #000;
+	text-align: center;
+	font-size: 5vh;
+	color: red;
+	animation: loadfaderfail 4s infinite;
+}
+
 .credits-container {
     display: none;
     z-index: 2;
@@ -62,7 +101,7 @@ canvas:active {
 .footer a {
     text-decoration: none;
     text-decoration-color: limegreen;
-    color: palegreen;
+    color: white;
     text-shadow: 0px 0px 0.2em gold;
 }
 
