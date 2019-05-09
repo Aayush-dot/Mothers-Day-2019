@@ -1,6 +1,7 @@
 const GROUND = -15;
 const DEFAULT_CAMERA_X = 0, DEFAULT_CAMERA_Y = 0, DEFAULT_CAMERA_Z = 5;
-
+const AMBIENT_ENABLED = false;
+const AXES_HELPER = true;
 
 var camera, renderer;
 var emitter;
@@ -63,8 +64,10 @@ scene.fog = new THREE.Fog(0x000000, 10, 80);
 
 
 // add ambient light
-var light = new THREE.AmbientLight(0xffffff, 1);
-scene.add(light);    
+if (AMBIENT_ENABLED) {
+    var light = new THREE.AmbientLight(0xffffff, 1);
+    scene.add(light);    
+}
 
 
 // add ground plane, receiving shadow from object that cast(s)Shadow
@@ -110,9 +113,10 @@ function addSpotLight(helper) {
 
 
 // add axis helper
-var axesHelper = new THREE.AxesHelper(15);
-scene.add(axesHelper);    
-
+if (AXES_HELPER) {
+    var axesHelper = new THREE.AxesHelper(15);
+    scene.add(axesHelper);    
+}
 
 // load Mother's Day light-up sign model
 var loader = new THREE.GLTFLoader();
@@ -136,15 +140,18 @@ function(gltf) {
     crossCube.position.set(0, 0, 0);
 */
     
-    scene.getObjectByName('M1').rotation.set(Math.PI / 2, 0, 0);
+    scene.getObjectByName('M1').rotation.set(Math.PI / 2, 0, -.2);
     scene.getObjectByName('O1').rotation.set(Math.PI / 2, 0, 0);
-    scene.getObjectByName('M2').rotation.set(Math.PI / 2, 0, 0);
+    scene.getObjectByName('M2').rotation.set(Math.PI / 2, 0, .2);
+    
+    scene.getObjectByName('M1').position.y = -.2;
+    scene.getObjectByName('M1').position.z = .4;
 
 	document.querySelector('#load-message').style.display = 'none';
 
     setupLights();
     
-    addSpotLight(true);
+    //addSpotLight(true);
     
     animate();
 
@@ -221,13 +228,17 @@ function setupLights() {
         
         light.material = new THREE.MeshLambertMaterial({ color: 0x000000, emissive: emissiveColor, emissiveIntensity: emissiveIntensity });
         
-        var pointLight = new THREE.PointLight(0xffffff, 0.1, 5);
+        var pointLight = new THREE.PointLight(0xffffff, 1, 5);
+        pointLight.name = lights[x]+'-PointLight';
         light.add(pointLight);
-        //pointLight.position.z = 10;
+        pointLight.position.y = 1;
         console.log(pointLight.position.z);
-        light.add(new THREE.PointLightHelper(pointLight, 20));
-        //light.add(new THREE.AxesHelper(light));
+        //scene.add(new THREE.PointLightHelper(pointLight, 2));
     }
+    
+        /*var pl = new THREE.PointLight(0xffffff, 0.1, 5);
+        scene.add(pl);
+        pl.add(new THREE.PointLightHelper(pointLight, 20));*/
 }
 
 // odd / even blink function.
@@ -239,9 +250,17 @@ function blinkLights() {
     
     for (var x = 0; x < lights.length; x++) {
         var light = scene.getObjectByName(lights[x]);
+        var pointLight = scene.getObjectByName(lights[x]+'-PointLight');
         
-        light.material.emissiveIntensity = light.material.emissiveIntensity == 0? 1 : 0;
+        var lIntensity = light.material.emissiveIntensity;
         
+        if (lIntensity == 0) {
+            light.material.emissiveIntensity = 1;
+            pointLight.intensity = 1;
+        } else {
+            light.material.emissiveIntensity = 0;
+            pointLight.intensity = 0;
+        }
         //if (even && ) scene.getObjectByName(lights[x]).visible = x % 2 == 0 && x != 1;
         //if (!even) scene.getObjectByName(lights[x]).visible = x % 2 != 0 || x == 1;
     }
