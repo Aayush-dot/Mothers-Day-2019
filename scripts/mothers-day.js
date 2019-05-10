@@ -280,7 +280,7 @@ function setupLightsInitial() {
         
         // mobiletroubleshooting temporarily disabling pointLights.
         
-        if (x < 15) {
+        if (x < 10) {
         var pointLight = new THREE.PointLight(GLOW_COLOR, 1, 5);
         pointLight.name = lights[x]+'-PointLight';
         light.add(pointLight);
