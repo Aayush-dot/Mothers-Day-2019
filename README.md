@@ -35,3 +35,4 @@
     * "I added a hemisphere light in addition to pointlights and the textures started rendering."
 2. Re-enabled blinker functions without pointLights. No problems.
 2. Added hemisphere light. Works by itself, but when I re-enable the pointLights the text doesn't show.
+2. Added just one pointLight directly to scene. Works!

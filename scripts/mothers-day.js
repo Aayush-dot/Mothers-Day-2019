@@ -3,7 +3,7 @@ const VERSION = '0.1.1';
 const GROUND = -15;
 const DEFAULT_CAMERA_X = 0, DEFAULT_CAMERA_Y = 0, DEFAULT_CAMERA_Z = 5;
 const AMBIENT_ENABLED = true;
-const HEMISPHEREL_ENABLED = true;
+const HEMISPHEREL_ENABLED = false;
 const FOG_ENABLED = false;
 const AXES_HELPER = false;
 
