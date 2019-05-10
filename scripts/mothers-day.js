@@ -82,16 +82,17 @@ if (AMBIENT_ENABLED) {
 
 
 // add ground plane, receiving shadow from object that cast(s)Shadow
+/*
 var geometry = new THREE.PlaneGeometry(300, 300, 100, 100);
 var material = new THREE.MeshStandardMaterial({color: 0xC0C0C0, side: THREE.DoubleSide});
 
 var plane = new THREE.Mesh(geometry, material);
-//scene.add(plane);
+scene.add(plane);
 plane.position.y = GROUND;
 plane.rotation.x = Math.PI / 2;
 plane.receiveShadow = true;    
 
-var spotLight;
+var spotLight;*/
 
 function addSpotLight(helper) {
 // add spotlight that casts shadow onto objects that recieve it
@@ -283,10 +284,12 @@ function setupLightsInitial() {
         
         // mobiletroubleshooting temporarily disabling pointLights.
         
+        if (x < 15) {
         var pointLight = new THREE.PointLight(GLOW_COLOR, 1, 5);
         pointLight.name = lights[x]+'-PointLight';
         light.add(pointLight);
         pointLight.position.y = 1;
+        }
         
         //console.log(pointLight.position.z);
         //scene.add(new THREE.PointLightHelper(pointLight, 2));
@@ -307,19 +310,19 @@ function blinkLights() {
     
     for (var x = 0; x < lights.length; x++) {
         var light = scene.getObjectByName(lights[x]);
-        //var pointLight = scene.getObjectByName(lights[x]+'-PointLight');
+        var pointLight = scene.getObjectByName(lights[x]+'-PointLight');
         
         var isOn = light.lightIsOn;
         
         if (isOn) {
             //light.material.emissiveIntensity = 0;
-            //pointLight.intensity = 0;
+            pointLight.intensity = 0;
             light.material.opacity = 0.1;
             
             light.lightIsOn = false;
         } else {
             light.material.emissiveIntensity = 1;
-            //pointLight.intensity = 1;
+            pointLight.intensity = 1;
             light.material.opacity = 1;
             
             light.lightIsOn = true;
