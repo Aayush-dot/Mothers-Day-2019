@@ -251,7 +251,6 @@ var even = true;
 
 
 function setupBlink() {
-    return false;
     for (var x = 0; x < lights.length; x++) {
         var light = scene.getObjectByName(lights[x]);
         light.lightIsOn = x % 2 == 0 && x != 1;
@@ -263,7 +262,6 @@ function setupBlink() {
 }
 
 function setupLightsInitial() {
-    return false;
     for (var x = 0; x < lights.length; x++) {
         var light = scene.getObjectByName(lights[x]);
         
