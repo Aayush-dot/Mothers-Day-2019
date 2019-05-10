@@ -1,7 +1,10 @@
 const GROUND = -15;
 const DEFAULT_CAMERA_X = 0, DEFAULT_CAMERA_Y = 0, DEFAULT_CAMERA_Z = 5;
-const AMBIENT_ENABLED = false;
+const AMBIENT_ENABLED = true;
 const AXES_HELPER = false;
+
+const GLOW_COLOR = 0xfbf2b7;
+const LIGHT_BACKGROUND_COLOR = 0xccccff;
 
 var camera, renderer;
 var emitter;
@@ -57,7 +60,7 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 
 document.body.appendChild(renderer.domElement);
 
-scene.background = new THREE.Color( 0xccccff );
+scene.background = new THREE.Color( LIGHT_BACKGROUND_COLOR );
 
 
 // add distance fog
@@ -66,7 +69,7 @@ scene.fog = new THREE.Fog(0x000000, 10, 80);
 
 // add ambient light
 if (AMBIENT_ENABLED) {
-    var light = new THREE.AmbientLight(0xffffff, 1);
+    var light = new THREE.AmbientLight(0xffffff, 0.2);
     scene.add(light);    
 }
 
@@ -108,10 +111,6 @@ function addSpotLight(helper) {
     }
 }
 
-// cube light
-//var cubeLight = new THREE.PointLight(0xffffff, 1, 100);
-//scene.add(cubeLight);
-
 
 // add axis helper
 if (AXES_HELPER) {
@@ -124,7 +123,7 @@ var M1, O1, M2;
 
 // load Mother's Day light-up sign model
 var loader = new THREE.GLTFLoader();
-loader.load('models/mothers-day.glb',
+loader.load('models/mothers-day-2.glb',
 function(gltf) {
     // loader callback
 
@@ -132,17 +131,15 @@ function(gltf) {
     
     scene.add(gltf.scene);
     
-/*
-    crossCube = scene.getObjectByName('Cube777');
-    //crossCube.castShadow = true;
-    crossCube.receiveShadow = true;
-    crossCube.material.fog = false; // Makes it so the crossCube isn't affected by distance fog.
-
-    crossCube.material = new THREE.MeshPhysicalMaterial({color: 0xffd700});
-    
-    crossCube.scale.set(0.3, 0.3, 0.3);
-    crossCube.position.set(0, 0, 0);
-*/
+    /*
+    var texture = new THREE.TextureLoader()
+    texture.load('images/silver-brushed-metal-texture-768x768.jpg');
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.RepeatWrapping;
+    //texture.repeat.set( 4, 4 );
+    console.log(texture);
+    var material = new THREE.MeshLambertMaterial({ map: texture });
+    */
     
     M1 = scene.getObjectByName('M1');
     O1 = scene.getObjectByName('O1');
@@ -251,9 +248,11 @@ function setupLightsInitial() {
         //var emissiveColor = new THREE.Color(0xffffff);
         var emissiveIntensity = light.lightIsOn? 1 : 0;
         
-        light.material = new THREE.MeshLambertMaterial({ color: 0x000000, /*emissive: emissiveColor,*/ emissive: new THREE.Color(0xffffff), emissiveIntensity: emissiveIntensity });
+        light.material = new THREE.MeshLambertMaterial({ color: 0x000000, /*emissive: emissiveColor,*/ emissive: new THREE.Color(GLOW_COLOR), emissiveIntensity: emissiveIntensity });
         
-        var pointLight = new THREE.PointLight(0xffffff, 1, 5);
+        light.material.transparent = true;
+        
+        var pointLight = new THREE.PointLight(GLOW_COLOR, 1, 5);
         pointLight.name = lights[x]+'-PointLight';
         light.add(pointLight);
         pointLight.position.y = 1;
@@ -280,13 +279,15 @@ function blinkLights() {
         var isOn = light.lightIsOn;
         
         if (isOn) {
-            light.material.emissiveIntensity = 0;
+            //light.material.emissiveIntensity = 0;
             pointLight.intensity = 0;
+            light.material.opacity = 0.1;
             
             light.lightIsOn = false;
         } else {
             light.material.emissiveIntensity = 1;
             pointLight.intensity = 1;
+            light.material.opacity = 1;
             
             light.lightIsOn = true;
         }
@@ -306,6 +307,7 @@ function resetSign() {
         var intensity = signOn? 1 : 0;
         light.material.emissiveIntensity = intensity;
         pointLight.intensity = intensity;
+        light.material.opacity = signOn? 1 : 0;
     }    
 }
 
@@ -322,7 +324,7 @@ function playSound(sound) {
 }
 
 
-document.querySelector('#pause').onclick = function(e) {
+document.querySelector('#on-off').onclick = function(e) {
     playSound('switch');
     signOn = !signOn;
     if (signOn) {

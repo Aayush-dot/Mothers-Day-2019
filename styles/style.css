@@ -68,8 +68,8 @@ canvas:active {
 
 .credits {
     font-size: 3vh;
-    background: rgba(0, 0, 0, 0.5);
-    color: lime;
+    background: rgba(0, 0, 0, 0.7);
+    color: fuchsia;
     padding: 1em;
 }
 
@@ -78,7 +78,7 @@ canvas:active {
 }
 
 .credits a {
-    color: lime;
+    color: fuchsia;
 }
 
 
@@ -101,14 +101,24 @@ canvas:active {
 .footer a {
     text-decoration: none;
     text-decoration-color: limegreen;
-    color: white;
+    color: #000;
     text-shadow: 0px 0px 0.2em gold;
 }
 
 .footer a:hover {
-    color: gold;
+    color: fuchsia;
     text-shadow: 0px 0px 0.2em #fff;
 }
+
+/*#on-off {
+    border: 0;
+    line-height: 5vh;
+}
+#on-off img {
+    border: 0;
+    width: 5vh;
+    height: 5vh;
+}*/
 
 /*
 #pause {

@@ -1,5 +1,9 @@
 # Mothers Day 2019
 
+## v0.1
+* Adjusted the lighting.
+* Fixed the texture (now loads).
+
 ## v0.0.5a
 * Better switching mechanics.
 * Added switch sound.
@@ -16,7 +20,6 @@
 * Need to fix textures.
 
 # Suggestions
-* 3D on/off switch?
-* Switch sounds.
+* 3D on/off switch? (Replaced with text as of v0.1)
 * <a href="https://stackoverflow.com/questions/50948014/emit-light-from-an-object">Bloom?</a> 
 * Vertical oscillation.
