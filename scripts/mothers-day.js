@@ -169,10 +169,10 @@ function(gltf) {
     console.log(scene);
     
     // troubleshooting: add a simple cube.
-    var geometry = new THREE.BoxBufferGeometry( 1, 1, 1 );
+    /*var geometry = new THREE.BoxBufferGeometry( 1, 1, 1 );
     var material = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
     var mesh = new THREE.Mesh( geometry, material );
-    scene.add( mesh );
+    scene.add( mesh );*/
     
 }, undefined, function(error) {
     console.error(error);

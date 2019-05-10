@@ -5,7 +5,7 @@
 // https://stackoverflow.com/a/46529254
 
 // suppress popups (for production versions)
-const SUPPRESS_POPUPS = false;
+const SUPPRESS_POPUPS = true;
 
 if (!SUPPRESS_POPUPS) {
 
