@@ -3,6 +3,7 @@ const VERSION = '0.1.1';
 const GROUND = -15;
 const DEFAULT_CAMERA_X = 0, DEFAULT_CAMERA_Y = 0, DEFAULT_CAMERA_Z = 5;
 const AMBIENT_ENABLED = true;
+const HEMISPHEREL_ENABLED = true;
 const FOG_ENABLED = false;
 const AXES_HELPER = false;
 
@@ -264,6 +265,13 @@ function setupBlink() {
 
 // mobiletroubleshooting problem is in this function.
 function setupLightsInitial() {
+    // setup hemisphere light.
+    if (HEMISPHEREL_ENABLED) {
+        var hLight = new THREE.HemisphereLight( 0xffffbb, 0x080820, 1 );
+        scene.add(hLight);
+    }
+    
+    
     for (var x = 0; x < lights.length; x++) {
         var light = scene.getObjectByName(lights[x]);
         

@@ -25,11 +25,12 @@
 # Suggestions
 * 3D on/off switch? (Replaced with text as of v0.1)
 * <a href="https://stackoverflow.com/questions/50948014/emit-light-from-an-object">Bloom?</a> 
-* Vertical oscillation.
 
 # Mobile troubleshooting
 1. Added cube to check loading: cube loads.
 2. Checked console with console remap. No errors.
 2. Old non-textured letters do not show either.
 2. Turned off blinker functions. <b>Letters show!</b>
-2. Disabled pointLights, as suggested in <a href="https://github.com/mrdoob/three.js/issues/9131">three.js issue #9131</a>. Letters show. Use area lamps / spotlights instead?
+2. Disabled pointLights, as suggested in <a href="https://github.com/mrdoob/three.js/issues/9131">three.js issue #9131</a>. Letters show. 
+    * "I added a hemisphere light in addition to pointlights and the textures started rendering."
+2. Re-enabled blinker functions without pointLights. No problems.
