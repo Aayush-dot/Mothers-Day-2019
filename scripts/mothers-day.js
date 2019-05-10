@@ -3,6 +3,7 @@ const VERSION = '0.1.1';
 const GROUND = -15;
 const DEFAULT_CAMERA_X = 0, DEFAULT_CAMERA_Y = 0, DEFAULT_CAMERA_Z = 5;
 const AMBIENT_ENABLED = true;
+const FOG_ENABLED = false;
 const AXES_HELPER = false;
 
 const GLOW_COLOR = 0xfbf2b7;
@@ -66,7 +67,7 @@ scene.background = new THREE.Color( LIGHT_BACKGROUND_COLOR );
 
 
 // add distance fog
-scene.fog = new THREE.Fog(0x000000, 10, 80);
+if (FOG_ENABLED) scene.fog = new THREE.Fog(0x000000, 10, 80);
 
 
 // add ambient light
@@ -125,7 +126,8 @@ var M1, O1, M2;
 
 // load Mother's Day light-up sign model
 var loader = new THREE.GLTFLoader();
-loader.load('models/mothers-day-2.glb',
+//loader.load('models/mothers-day-2.glb',
+loader.load('models/mothers-day.glb',
 function(gltf) {
     // loader callback
 
