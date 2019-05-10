@@ -1,3 +1,5 @@
+const VERSION = '0.1.1';
+
 const GROUND = -15;
 const DEFAULT_CAMERA_X = 0, DEFAULT_CAMERA_Y = 0, DEFAULT_CAMERA_Z = 5;
 const AMBIENT_ENABLED = true;
@@ -193,8 +195,18 @@ function animate() {
         if (signOn && signCycle) blinkLights();
     }
     
-    startZ += 0.2;
+    startZ += 0.01;
     // bobber function here.
+    // needs try / catch to avoid setting sub-properties to properties that aren't yet set
+    try {
+        M1.rotation.y = Math.cos(startZ) / 100;
+        M1.position.y = Math.cos(startZ) / 10;
+        M2.position.y = Math.cos(startZ + 1) / 10;
+        M2.rotation.y = Math.cos(startZ + 1) / 100;
+        O1.position.y = Math.cos(startZ + 0.5) / 10;
+    } catch(e) {
+        
+    }
    
     renderer.render(scene, camera);
 }
@@ -371,3 +383,8 @@ window.onresize = function() {
 // https://stackoverflow.com/questions/7768269/ipad-safari-disable-scrolling-and-bounce-effect
 function preventDefault(e) { e.preventDefault(); }
 document.body.addEventListener('touchmove', preventDefault, { passive: false });
+
+// populate version field
+window.onload = function() {
+    document.querySelector('#version').innerHTML = VERSION;
+}

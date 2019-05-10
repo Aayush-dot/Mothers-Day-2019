@@ -1,5 +1,8 @@
 # Mothers Day 2019
 
+## v0.1.1
+* Implemented bobber function.
+
 ## v0.1
 * Adjusted the lighting.
 * Fixed the texture (now loads).
