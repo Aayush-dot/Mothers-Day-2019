@@ -122,12 +122,14 @@ if (AXES_HELPER) {
 }
 
 
+
+
+
 var M1, O1, M2;
 
 // load Mother's Day light-up sign model
 var loader = new THREE.GLTFLoader();
-//loader.load('models/mothers-day-2.glb',
-loader.load('models/mothers-day.glb',
+loader.load('models/mothers-day-2.glb',
 function(gltf) {
     // loader callback
 
@@ -165,6 +167,13 @@ function(gltf) {
     animate();
 
     console.log(scene);
+    
+    // troubleshooting: add a simple cube.
+    var geometry = new THREE.BoxBufferGeometry( 1, 1, 1 );
+    var material = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
+    var mesh = new THREE.Mesh( geometry, material );
+    scene.add( mesh );
+    
 }, undefined, function(error) {
     console.error(error);
 	notifyLoadFail();
