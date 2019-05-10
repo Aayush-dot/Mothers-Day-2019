@@ -32,3 +32,4 @@
 2. Checked console with console remap. No errors.
 2. Old non-textured letters do not show either.
 2. Turned off blinker functions. <b>Letters show!</b>
+2. Disabled pointLights, as suggested in <a href="https://github.com/mrdoob/three.js/issues/9131">three.js issue #9131</a>. Letters show. Use area lamps / spotlights instead?

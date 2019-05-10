@@ -262,7 +262,7 @@ function setupBlink() {
 }
 
 
-// problem is in this function.
+// mobiletroubleshooting problem is in this function.
 function setupLightsInitial() {
     for (var x = 0; x < lights.length; x++) {
         var light = scene.getObjectByName(lights[x]);
@@ -277,7 +277,7 @@ function setupLightsInitial() {
         
         light.material.transparent = true;
         
-        // temporarily disabling pointLights.
+        // mobiletroubleshooting temporarily disabling pointLights.
         /*var pointLight = new THREE.PointLight(GLOW_COLOR, 1, 5);
         pointLight.name = lights[x]+'-PointLight';
         light.add(pointLight);
@@ -293,8 +293,8 @@ function setupLightsInitial() {
 }
 
 // odd / even blink function.
+// mobiletroubleshooting disabled pointLights.
 function blinkLights() {    
-    return false;
     /*for (var x = 0; x < lights.length; x++) {   
         scene.getObjectByName(lights[x]).visible = true;
     }*/
@@ -302,19 +302,19 @@ function blinkLights() {
     
     for (var x = 0; x < lights.length; x++) {
         var light = scene.getObjectByName(lights[x]);
-        var pointLight = scene.getObjectByName(lights[x]+'-PointLight');
+        //var pointLight = scene.getObjectByName(lights[x]+'-PointLight');
         
         var isOn = light.lightIsOn;
         
         if (isOn) {
             //light.material.emissiveIntensity = 0;
-            pointLight.intensity = 0;
+            //pointLight.intensity = 0;
             light.material.opacity = 0.1;
             
             light.lightIsOn = false;
         } else {
             light.material.emissiveIntensity = 1;
-            pointLight.intensity = 1;
+            //pointLight.intensity = 1;
             light.material.opacity = 1;
             
             light.lightIsOn = true;
