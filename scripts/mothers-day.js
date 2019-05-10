@@ -288,8 +288,8 @@ function setupLightsInitial() {
         // mobiletroubleshooting temporarily disabling pointLights.
         var pointLight = new THREE.PointLight(GLOW_COLOR, 1, 5);
         pointLight.name = lights[x]+'-PointLight';
-        light.add(pointLight);
-        pointLight.position.y = 1;
+        //light.add(pointLight);
+        //pointLight.position.y = 1;
         
         //console.log(pointLight.position.z);
         //scene.add(new THREE.PointLightHelper(pointLight, 2));
