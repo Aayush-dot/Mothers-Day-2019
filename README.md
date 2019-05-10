@@ -36,3 +36,4 @@
 2. Re-enabled blinker functions without pointLights. No problems.
 2. Added hemisphere light. Works by itself, but when I re-enable the pointLights the text doesn't show.
 2. Added just one pointLight directly to scene. Works!
+2. Removed scene pointLight and allowed one sub pointLight to be added. Works!
