@@ -138,16 +138,6 @@ function(gltf) {
     
     scene.add(gltf.scene);
     
-    /*
-    var texture = new THREE.TextureLoader()
-    texture.load('images/silver-brushed-metal-texture-768x768.jpg');
-    texture.wrapS = THREE.RepeatWrapping;
-    texture.wrapT = THREE.RepeatWrapping;
-    //texture.repeat.set( 4, 4 );
-    console.log(texture);
-    var material = new THREE.MeshLambertMaterial({ map: texture });
-    */
-    
     M1 = scene.getObjectByName('M1');
     O1 = scene.getObjectByName('O1');
     M2 = scene.getObjectByName('M2');
@@ -271,8 +261,8 @@ function setupLightsInitial() {
         scene.add(hLight);
     }
     
-    var pointLight = new THREE.PointLight(GLOW_COLOR, 1, 5);
-    scene.add(pointLight);
+    //var pointLight = new THREE.PointLight(GLOW_COLOR, 1, 5);
+    //scene.add(pointLight);
     
     
     for (var x = 0; x < lights.length; x++) {
@@ -289,10 +279,12 @@ function setupLightsInitial() {
         light.material.transparent = true;
         
         // mobiletroubleshooting temporarily disabling pointLights.
-        /*var pointLight = new THREE.PointLight(GLOW_COLOR, 1, 5);
+        if (x == 0) {
+        var pointLight = new THREE.PointLight(GLOW_COLOR, 1, 5);
         pointLight.name = lights[x]+'-PointLight';
         light.add(pointLight);
-        pointLight.position.y = 1;*/
+        pointLight.position.y = 1;
+        }
         
         //console.log(pointLight.position.z);
         //scene.add(new THREE.PointLightHelper(pointLight, 2));
