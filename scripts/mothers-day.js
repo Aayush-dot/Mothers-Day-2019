@@ -2,6 +2,7 @@ const VERSION = '0.1.1';
 
 const GROUND = -15;
 const DEFAULT_CAMERA_X = 0, DEFAULT_CAMERA_Y = 0, DEFAULT_CAMERA_Z = 5;
+const SHADOWMAP_ENABLED = false;
 const AMBIENT_ENABLED = true;
 const HEMISPHEREL_ENABLED = false;
 const FOG_ENABLED = false;
@@ -57,8 +58,10 @@ controls.maxDistance = 100;
 // renderer with better shadow map
 renderer = new THREE.WebGLRenderer({ antialias: true });
 
-renderer.shadowMap.enabled = true;
-renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+if (SHADOWMAP_ENABLED) {
+    renderer.shadowMap.enabled = true;
+    renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+}
 
 renderer.setSize(window.innerWidth, window.innerHeight);
 
@@ -280,12 +283,10 @@ function setupLightsInitial() {
         
         // mobiletroubleshooting temporarily disabling pointLights.
         
-        if (x < 10) {
         var pointLight = new THREE.PointLight(GLOW_COLOR, 1, 5);
         pointLight.name = lights[x]+'-PointLight';
         light.add(pointLight);
         pointLight.position.y = 1;
-        }
         
         //console.log(pointLight.position.z);
         //scene.add(new THREE.PointLightHelper(pointLight, 2));
