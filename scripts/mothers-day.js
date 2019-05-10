@@ -261,6 +261,8 @@ function setupBlink() {
     }
 }
 
+
+// problem is in this function.
 function setupLightsInitial() {
     for (var x = 0; x < lights.length; x++) {
         var light = scene.getObjectByName(lights[x]);
@@ -275,10 +277,12 @@ function setupLightsInitial() {
         
         light.material.transparent = true;
         
-        var pointLight = new THREE.PointLight(GLOW_COLOR, 1, 5);
+        // temporarily disabling pointLights.
+        /*var pointLight = new THREE.PointLight(GLOW_COLOR, 1, 5);
         pointLight.name = lights[x]+'-PointLight';
         light.add(pointLight);
-        pointLight.position.y = 1;
+        pointLight.position.y = 1;*/
+        
         //console.log(pointLight.position.z);
         //scene.add(new THREE.PointLightHelper(pointLight, 2));
     }
