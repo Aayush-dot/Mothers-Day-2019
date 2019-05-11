@@ -98,7 +98,7 @@ loader.load('models/mothers-day-2.glb', function(gltf) {
     
     animate();
 
-    //console.log(scene);
+    console.log(scene);
 }, undefined, function(error) {
     notifyLoadFail();
     console.error(error);
@@ -143,7 +143,7 @@ function animate() {
     } catch(e) {
         
     }
-   
+    
     renderer.render(scene, camera);
 }
 
@@ -193,6 +193,15 @@ function setupLightsInitial() {
         scene.add(hLight);
     }
     
+    if (POINTLIGHTS_ENABLED) {
+        for (var x = 0; x < 10; x++) {
+            var pointLight = new THREE.PointLight(GLOW_COLOR, 1, 5);
+            pointLight.name = 'pointLight'+x;
+            pointLight.intensity = 0;
+            scene.add(pointLight);
+            //light.children[0].position.y = 1;
+        }
+    }
     
     
     for (var x = 0; x < lights.length; x++) {
@@ -202,11 +211,7 @@ function setupLightsInitial() {
         // iOS workaround: set up 10 pointLights (minimum needed for blink).
         // Change the parents of these pointLights with each blink so that only 10 lights total are needed
         // despite there being 20 lights on the letters.
-        if (POINTLIGHTS_ENABLED && light.lightIsOn) {
-            var pointLight = new THREE.PointLight(GLOW_COLOR, 1, 5);
-            light.add(pointLight);
-            light.children[0].position.y = 1;           
-        }
+
         //var emissiveColor = light.lightIsOn? new THREE.Color(0xffffff) : new THREE.Color(0x000000);
         
         //var emissiveColor = new THREE.Color(0xffffff);
@@ -233,14 +238,8 @@ function setupLightsInitial() {
         pl.add(new THREE.PointLightHelper(pointLight, 20));*/
 }
 
-// odd / even blink function.
-// mobiletroubleshooting disabled pointLights.
+// odd / even light blink function.
 function blinkLights() {    
-    /*for (var x = 0; x < lights.length; x++) {   
-        scene.getObjectByName(lights[x]).visible = true;
-    }*/
-    
-    
     for (var x = 0; x < lights.length; x++) {
         var light = scene.getObjectByName(lights[x]);
         //if (POINTLIGHTS_ENABLED) var pointLight = scene.getObjectByName(lights[x]+'-PointLight');
@@ -250,11 +249,9 @@ function blinkLights() {
         if (isOn) {
             //light.material.emissiveIntensity = 0;
             //if (POINTLIGHTS_ENABLED) pointLight.intensity = 0;
-            //alert(light.children[0]);
             if (POINTLIGHTS_ENABLED && light.children[0]) {
-                /*var pl = light.children[0];
-                pointLights.push(pl);
-                light.remove(pl);*/
+                var pl = light.children[0];
+                light.remove(pl);
             }
             
             light.material.opacity = 0.1;
@@ -265,12 +262,8 @@ function blinkLights() {
             //if (POINTLIGHTS_ENABLED) pointLight.intensity = 1;
             
             if (POINTLIGHTS_ENABLED && !light.children[0]) {
-                /*console.log(pointLights);
-                //if (!light.children[0]) light.add(pointLights.pop());
-                //light.add(new THREE.PointLight(GLOW_COLOR, 1, 5));
-                var pl = pointLights.pop();
-                light.add(pl);
-                light.children[0].position.y = 1;*/
+                light.add(new THREE.PointLight(GLOW_COLOR, 1, 5));
+                light.children[0].position.y = 1;
             }
             
             light.material.opacity = 1;
