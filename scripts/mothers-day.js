@@ -1,17 +1,20 @@
 const DEBUG_ENABLED = false;
-const VERSION = '0.1.1';
+const VERSION = '0.2';
 
 const GROUND = -15;
 const DEFAULT_CAMERA_X = 0, DEFAULT_CAMERA_Y = 0, DEFAULT_CAMERA_Z = 5;
 const SHADOWMAP_ENABLED = false;
 const AMBIENT_ENABLED = true;
-const HEMISPHEREL_ENABLED = false;
+const HEMISPHEREL_ENABLED = true;
 const POINTLIGHTS_ENABLED = true;
 const FOG_ENABLED = false;
 const AXES_HELPER = false;
 
+const TRANSPARENT_BACKGROUND = true;
+
 const GLOW_COLOR = 0xfbf2b7;
 const LIGHT_BACKGROUND_COLOR = 0xccccff;
+const DARK_BACKGROUND_COLOR = 0x57297a;
 
 var camera, renderer;
 var emitter;
@@ -44,7 +47,7 @@ controls.maxDistance = 100;
 //controls.autoRotate = true;
 
 // renderer with better shadow map
-renderer = new THREE.WebGLRenderer({ antialias: true });
+renderer = new THREE.WebGLRenderer({ antialias: true, alpha: TRANSPARENT_BACKGROUND });
 
 if (SHADOWMAP_ENABLED) {
     renderer.shadowMap.enabled = true;
@@ -56,7 +59,7 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 document.body.appendChild(renderer.domElement);
 
 // add background color
-scene.background = new THREE.Color( LIGHT_BACKGROUND_COLOR );
+if (!TRANSPARENT_BACKGROUND) scene.background = new THREE.Color( DARK_BACKGROUND_COLOR );
 
 
 // add distance fog
@@ -65,8 +68,14 @@ if (FOG_ENABLED) scene.fog = new THREE.Fog(0x000000, 10, 80);
 
 // add ambient light
 if (AMBIENT_ENABLED) {
-    var light = new THREE.AmbientLight(0xffffff, 0.5);
+    var light = new THREE.AmbientLight(0xffffff, 0.3);
     scene.add(light);    
+}
+
+// setup hemisphere light.
+if (HEMISPHEREL_ENABLED) {
+    var hLight = new THREE.HemisphereLight( 0xffffbb, 0x080820, 0.5 );
+    scene.add(hLight);
 }
 
 
@@ -140,11 +149,14 @@ function animate() {
     // bobber function here.
     // needs try / catch to avoid setting sub-properties to properties that aren't yet set
     try {
-        M1.rotation.y = Math.cos(startZ) / 100;
-        M1.position.y = Math.cos(startZ) / 10;
-        M2.position.y = Math.cos(startZ + 1) / 10;
-        M2.rotation.y = Math.cos(startZ + 1) / 100;
-        O1.position.y = Math.cos(startZ + 0.5) / 10;
+        var rotationInc = 50;
+        var positionInc = 5;
+        
+        M1.rotation.y = Math.cos(startZ) / rotationInc;
+        M1.position.y = Math.cos(startZ) / positionInc;
+        M2.position.y = Math.cos(startZ + 1) / positionInc;
+        M2.rotation.y = Math.cos(startZ + 1) / -rotationInc;
+        O1.position.y = Math.cos(startZ + 0.5) / positionInc;
     } catch(e) {
         
     }
@@ -194,31 +206,10 @@ function setupBlink() {
 }
 
 function setupLightsInitial() {
-    // setup hemisphere light.
-    if (HEMISPHEREL_ENABLED) {
-        var hLight = new THREE.HemisphereLight( 0xffffbb, 0x080820, 1 );
-        scene.add(hLight);
-    }
-    
-    /*if (POINTLIGHTS_ENABLED) {
-        for (var x = 0; x < 10; x++) {
-            var pointLight = new THREE.PointLight(GLOW_COLOR, 1, 5);
-            pointLight.name = 'pointLight'+x;
-            pointLight.intensity = 0;
-            scene.add(pointLight);
-            //light.children[0].position.y = 1;
-        }
-    }*/
-    
-    
     for (var x = 0; x < lights.length; x++) {
         var light = scene.getObjectByName(lights[x]);
         
         light.lightIsOn = x % 2 == 0 && x != 1;
-        // iOS workaround: set up 10 pointLights (minimum needed for blink).
-        // Change the parents of these pointLights with each blink so that only 10 lights total are needed
-        // despite there being 20 lights on the letters.
-
         //var emissiveColor = light.lightIsOn? new THREE.Color(0xffffff) : new THREE.Color(0x000000);
         
         //var emissiveColor = new THREE.Color(0xffffff);
@@ -229,6 +220,8 @@ function setupLightsInitial() {
         light.material.transparent = true;
         
         // note: iOS Safari only supports 12 pointLights.
+        // would be easier to simply add 20 lights at once and alter their parameters, but I am limited
+        // by how many lights I can use, so adding the pointLights to each light on load is not enabled.
         /*if (POINTLIGHTS_ENABLED) {
             var pointLight = new THREE.PointLight(GLOW_COLOR, 1, 5);
             pointLight.name = lights[x]+'-PointLight';
@@ -269,7 +262,7 @@ function blinkLights() {
             //if (POINTLIGHTS_ENABLED) pointLight.intensity = 1;
             
             if (POINTLIGHTS_ENABLED && !light.children[0]) {
-                light.add(new THREE.PointLight(GLOW_COLOR, 1, 5));
+                light.add(new THREE.PointLight(GLOW_COLOR, 1, 1));
                 light.children[0].position.y = 1;
             }
             
@@ -288,13 +281,24 @@ function blinkLights() {
 function resetSign() {
     for (var x = 0; x < lights.length; x++) {
         var light = scene.getObjectByName(lights[x]);
-        var pointLight = scene.getObjectByName(lights[x]+'-PointLight');
+        //var pointLight = scene.getObjectByName(lights[x]+'-PointLight');
+        
+        if (!signOn && light.children[0]) light.remove(light.children[0]);
         
         var intensity = signOn? 1 : 0;
         light.material.emissiveIntensity = intensity;
-        pointLight.intensity = intensity;
-        light.material.opacity = signOn? 1 : 0;
+        //pointLight.intensity = intensity;
+        light.material.opacity = signOn? 1 : 0.1;
     }    
+}
+
+function switchSign(state) {
+    if (state == 'on') {
+        
+    } else {
+       // for (var x = 0; x < lights.legnth)
+    }
+    
 }
 
 function notifyLoadFail() {
@@ -320,8 +324,24 @@ function debugPrint() {
     debugMessage = [];
 }
 
+document.querySelector('#hamburger-menu').onclick = function(e) {
+    var items = document.querySelectorAll('.menu-item');
+    
+    for (const item of items) {
+        item.classList.toggle('menu-item-hidden');
+    }
+}
+
+var menuItems = document.querySelectorAll('.menu-item');
+Array.from(menuItems).forEach(item => {
+    item.addEventListener('click', function(e) {
+        playSound('switch');
+    });
+});
+
 document.querySelector('#on-off').onclick = function(e) {
     playSound('switch');
+    
     signOn = !signOn;
     if (signOn) {
         if (signCycle) setupBlink();
@@ -331,11 +351,13 @@ document.querySelector('#on-off').onclick = function(e) {
     resetSign();
 }
 
+
 document.querySelector('#cycle').onclick = function(e) {
-    playSound('switch');
     signCycle = !signCycle;
-    if (signCycle) {
-        setupBlink()
+    
+    if (signCycle || !signOn) {
+        signOn = true;
+        setupBlink();
     } else {
         resetSign();        
     }

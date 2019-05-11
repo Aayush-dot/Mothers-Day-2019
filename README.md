@@ -1,5 +1,11 @@
 # Mothers Day 2019
 
+## v0.2
+* Fixed problem with lights in iOS.
+* Rearranged the menus.
+* Added a background.
+* Adjusted lighting.
+
 ## v0.1.1
 * Implemented bobber function.
 
