@@ -25,6 +25,7 @@
 # Suggestions
 * 3D on/off switch? (Replaced with text as of v0.1)
 * <a href="https://stackoverflow.com/questions/50948014/emit-light-from-an-object">Bloom?</a> 
+* Add more extruded objects to give more detail (don't try to join into 1 mesh).
 
 # Mobile troubleshooting
 1. Added cube to check loading: cube loads.
@@ -37,3 +38,6 @@
 2. Added hemisphere light. Works by itself, but when I re-enable the pointLights the text doesn't show.
 2. Added just one pointLight directly to scene. Works!
 2. Removed scene pointLight and allowed one sub pointLight to be added. Works!
+
+## Discoveries
+1. iOS Safari has a limit of 12 pointLights.

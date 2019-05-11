@@ -5,6 +5,7 @@ const DEFAULT_CAMERA_X = 0, DEFAULT_CAMERA_Y = 0, DEFAULT_CAMERA_Z = 5;
 const SHADOWMAP_ENABLED = false;
 const AMBIENT_ENABLED = true;
 const HEMISPHEREL_ENABLED = false;
+const POINTLIGHTS_ENABLED = true;
 const FOG_ENABLED = false;
 const AXES_HELPER = false;
 
@@ -18,25 +19,18 @@ var signOn = true;
 var signCycle = true;
 var lookAtFace = false;
 
+var M1, O1, M2; // letters
+
 // scene and camera.
 var scene = new THREE.Scene();
 camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
-var aspect = window.innerWidth / window.innerHeight;
-var width = 25;
-var height = width / aspect;
 
-
-
-//var camera = new THREE.OrthographicCamera( width / -2, width / 2, height / 2, height / -2, 0, 100 );
 camera.position.z = 0;
 //camera.position = new THREE.Vector3(0,1,0);
 camera.position.set( DEFAULT_CAMERA_X, DEFAULT_CAMERA_Y, DEFAULT_CAMERA_Z );
 
 
-//console.log(camera.position);
-
 // orbit controls
-
 var controls = new THREE.OrbitControls(camera);
 controls.enableDamping = true;
 controls.enableKeys = true;
@@ -44,15 +38,7 @@ controls.enableDamping = true;
 controls.dampingFactor = 1;
 controls.minDistance = 10;
 controls.maxDistance = 100;
-
-
-//controls.minZoom = 10;
-//controls.maxZoom = 100;
-
-//console.log(camera.position);
-
 //controls.maxPolarAngle = Math.PI / 2; // can't pivot below the floor plane.
-
 //controls.autoRotate = true;
 
 // renderer with better shadow map
@@ -67,6 +53,7 @@ renderer.setSize(window.innerWidth, window.innerHeight);
 
 document.body.appendChild(renderer.domElement);
 
+// add background color
 scene.background = new THREE.Color( LIGHT_BACKGROUND_COLOR );
 
 
@@ -76,47 +63,8 @@ if (FOG_ENABLED) scene.fog = new THREE.Fog(0x000000, 10, 80);
 
 // add ambient light
 if (AMBIENT_ENABLED) {
-    var light = new THREE.AmbientLight(0xffffff, 0.2);
+    var light = new THREE.AmbientLight(0xffffff, 0.5);
     scene.add(light);    
-}
-
-
-// add ground plane, receiving shadow from object that cast(s)Shadow
-/*
-var geometry = new THREE.PlaneGeometry(300, 300, 100, 100);
-var material = new THREE.MeshStandardMaterial({color: 0xC0C0C0, side: THREE.DoubleSide});
-
-var plane = new THREE.Mesh(geometry, material);
-scene.add(plane);
-plane.position.y = GROUND;
-plane.rotation.x = Math.PI / 2;
-plane.receiveShadow = true;    
-
-var spotLight;*/
-
-function addSpotLight(helper) {
-// add spotlight that casts shadow onto objects that recieve it
-    spotLight = new THREE.SpotLight(0xffffff);
-
-    //spotLight.position.set(5, 30, 3);
-    spotLight.position.set(5, 10, 30);
-    spotLight.castShadow = true;
-    spotLight.shadow.radius = 3; // makes the edge blurrier at the expense of making it look like copies
-    spotLight.penumbra = 0.5;
-    spotLight.intensity = 0.5;
-
-    // make higher res
-    // = 1024 is faster, but edges are more jagged looking
-    spotLight.shadow.mapSize.width = 2048;
-    spotLight.shadow.mapSize.height = 2048;
-
-    scene.add(spotLight);
-
-    if (helper) {
-        // add spotlight helper
-        var spotLightHelper = new THREE.SpotLightHelper(spotLight);
-        scene.add(spotLightHelper);
-    }
 }
 
 
@@ -128,18 +76,9 @@ if (AXES_HELPER) {
 
 
 
-
-
-var M1, O1, M2;
-
 // load Mother's Day light-up sign model
 var loader = new THREE.GLTFLoader();
-loader.load('models/mothers-day-2.glb',
-function(gltf) {
-    // loader callback
-
-    // add gltf scene and make crossCube cast shadow from light
-    
+loader.load('models/mothers-day-2.glb', function(gltf) {
     scene.add(gltf.scene);
     
     M1 = scene.getObjectByName('M1');
@@ -157,21 +96,12 @@ function(gltf) {
 
     setupLightsInitial();
     
-    //addSpotLight(true);
-    
     animate();
 
-    console.log(scene);
-    
-    // troubleshooting: add a simple cube.
-    /*var geometry = new THREE.BoxBufferGeometry( 1, 1, 1 );
-    var material = new THREE.MeshBasicMaterial( { color: 0xffff00 } );
-    var mesh = new THREE.Mesh( geometry, material );
-    scene.add( mesh );*/
-    
+    //console.log(scene);
 }, undefined, function(error) {
+    notifyLoadFail();
     console.error(error);
-	notifyLoadFail();
 });
 
 animate();
@@ -256,8 +186,6 @@ function setupBlink() {
     }
 }
 
-
-// mobiletroubleshooting problem is in this function.
 function setupLightsInitial() {
     // setup hemisphere light.
     if (HEMISPHEREL_ENABLED) {
@@ -265,14 +193,20 @@ function setupLightsInitial() {
         scene.add(hLight);
     }
     
-    //var pointLight = new THREE.PointLight(GLOW_COLOR, 1, 5);
-    //scene.add(pointLight);
     
     
     for (var x = 0; x < lights.length; x++) {
         var light = scene.getObjectByName(lights[x]);
         
         light.lightIsOn = x % 2 == 0 && x != 1;
+        // iOS workaround: set up 10 pointLights (minimum needed for blink).
+        // Change the parents of these pointLights with each blink so that only 10 lights total are needed
+        // despite there being 20 lights on the letters.
+        if (POINTLIGHTS_ENABLED && light.lightIsOn) {
+            var pointLight = new THREE.PointLight(GLOW_COLOR, 1, 5);
+            light.add(pointLight);
+            light.children[0].position.y = 1;           
+        }
         //var emissiveColor = light.lightIsOn? new THREE.Color(0xffffff) : new THREE.Color(0x000000);
         
         //var emissiveColor = new THREE.Color(0xffffff);
@@ -282,14 +216,13 @@ function setupLightsInitial() {
         
         light.material.transparent = true;
         
-        // mobiletroubleshooting temporarily disabling pointLights.
-        
-        if (x < 13) {
-        var pointLight = new THREE.PointLight(GLOW_COLOR, 1, 5);
-        pointLight.name = lights[x]+'-PointLight';
-        light.add(pointLight);
-        pointLight.position.y = 1;
-        }
+        // note: iOS Safari only supports 12 pointLights.
+        /*if (POINTLIGHTS_ENABLED) {
+            var pointLight = new THREE.PointLight(GLOW_COLOR, 1, 5);
+            pointLight.name = lights[x]+'-PointLight';
+            light.add(pointLight);
+            pointLight.position.y = 1;
+        }*/
         
         //console.log(pointLight.position.z);
         //scene.add(new THREE.PointLightHelper(pointLight, 2));
@@ -310,19 +243,36 @@ function blinkLights() {
     
     for (var x = 0; x < lights.length; x++) {
         var light = scene.getObjectByName(lights[x]);
-        var pointLight = scene.getObjectByName(lights[x]+'-PointLight');
+        //if (POINTLIGHTS_ENABLED) var pointLight = scene.getObjectByName(lights[x]+'-PointLight');
         
         var isOn = light.lightIsOn;
         
         if (isOn) {
             //light.material.emissiveIntensity = 0;
-            pointLight.intensity = 0;
+            //if (POINTLIGHTS_ENABLED) pointLight.intensity = 0;
+            //alert(light.children[0]);
+            if (POINTLIGHTS_ENABLED && light.children[0]) {
+                /*var pl = light.children[0];
+                pointLights.push(pl);
+                light.remove(pl);*/
+            }
+            
             light.material.opacity = 0.1;
             
             light.lightIsOn = false;
         } else {
             light.material.emissiveIntensity = 1;
-            pointLight.intensity = 1;
+            //if (POINTLIGHTS_ENABLED) pointLight.intensity = 1;
+            
+            if (POINTLIGHTS_ENABLED && !light.children[0]) {
+                /*console.log(pointLights);
+                //if (!light.children[0]) light.add(pointLights.pop());
+                //light.add(new THREE.PointLight(GLOW_COLOR, 1, 5));
+                var pl = pointLights.pop();
+                light.add(pl);
+                light.children[0].position.y = 1;*/
+            }
+            
             light.material.opacity = 1;
             
             light.lightIsOn = true;
