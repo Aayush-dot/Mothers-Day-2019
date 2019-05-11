@@ -1,3 +1,4 @@
+const DEBUG_ENABLED = false;
 const VERSION = '0.1.1';
 
 const GROUND = -15;
@@ -20,6 +21,7 @@ var signCycle = true;
 var lookAtFace = false;
 
 var M1, O1, M2; // letters
+var debugMessage = [];
 
 // scene and camera.
 var scene = new THREE.Scene();
@@ -74,6 +76,9 @@ if (AXES_HELPER) {
     scene.add(axesHelper);    
 }
 
+if (DEBUG_ENABLED) {
+    document.querySelector('.debug').style.display = 'block';
+}
 
 
 // load Mother's Day light-up sign model
@@ -145,6 +150,8 @@ function animate() {
     }
     
     renderer.render(scene, camera);
+    
+    if (DEBUG_ENABLED) debugPrint();
 }
 
 // blinking lights on model.
@@ -193,7 +200,7 @@ function setupLightsInitial() {
         scene.add(hLight);
     }
     
-    if (POINTLIGHTS_ENABLED) {
+    /*if (POINTLIGHTS_ENABLED) {
         for (var x = 0; x < 10; x++) {
             var pointLight = new THREE.PointLight(GLOW_COLOR, 1, 5);
             pointLight.name = 'pointLight'+x;
@@ -201,7 +208,7 @@ function setupLightsInitial() {
             scene.add(pointLight);
             //light.children[0].position.y = 1;
         }
-    }
+    }*/
     
     
     for (var x = 0; x < lights.length; x++) {
@@ -302,6 +309,16 @@ function playSound(sound) {
     }
 }
 
+// debug functions
+function debugAdd(msg) {
+    debugMessage.push(msg);
+}
+
+function debugPrint() {
+    if (debugMessage.length == 0) return false;
+    document.querySelector('.debug').innerHTML = debugMessage.join('<br/>');
+    debugMessage = [];
+}
 
 document.querySelector('#on-off').onclick = function(e) {
     playSound('switch');
