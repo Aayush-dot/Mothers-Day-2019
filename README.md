@@ -1,5 +1,10 @@
 # Mothers Day 2019
 
+## v0.3
+* Created more detailed beveled letters.
+* Changed color of letters to match background better.
+* Made hamburger menu transparent.
+
 ## v0.2
 * Fixed problem with lights in iOS.
 * Rearranged the menus.
@@ -31,7 +36,9 @@
 # Suggestions
 * 3D on/off switch? (Replaced with text as of v0.1)
 * <a href="https://stackoverflow.com/questions/50948014/emit-light-from-an-object">Bloom?</a> 
-* Add more extruded objects to give more detail (don't try to join into 1 mesh).
+* Text is dark; add spotlight.
+* Add rotation of text as a whole.
+
 
 # Mobile troubleshooting
 1. Added cube to check loading: cube loads.

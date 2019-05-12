@@ -1,5 +1,5 @@
 const DEBUG_ENABLED = false;
-const VERSION = '0.2';
+const VERSION = '0.3';
 
 const GROUND = -15;
 const DEFAULT_CAMERA_X = 0, DEFAULT_CAMERA_Y = 0, DEFAULT_CAMERA_Z = 5;
@@ -68,7 +68,7 @@ if (FOG_ENABLED) scene.fog = new THREE.Fog(0x000000, 10, 80);
 
 // add ambient light
 if (AMBIENT_ENABLED) {
-    var light = new THREE.AmbientLight(0xffffff, 0.3);
+    var light = new THREE.AmbientLight(0xffffff, 0.5);
     scene.add(light);    
 }
 
@@ -92,7 +92,7 @@ if (DEBUG_ENABLED) {
 
 // load Mother's Day light-up sign model
 var loader = new THREE.GLTFLoader();
-loader.load('models/mothers-day-2.glb', function(gltf) {
+loader.load('models/mothers-day-3.glb', function(gltf) {
     scene.add(gltf.scene);
     
     M1 = scene.getObjectByName('M1');
@@ -107,6 +107,8 @@ loader.load('models/mothers-day-2.glb', function(gltf) {
     M1.position.z = .4;
 
 	document.querySelector('#load-message').style.display = 'none';
+    
+    spotLight();
 
     setupLightsInitial();
     
@@ -164,6 +166,11 @@ function animate() {
     renderer.render(scene, camera);
     
     if (DEBUG_ENABLED) debugPrint();
+}
+
+// to add
+function spotLight() {
+    //var sl = new THREE.SpotLight();
 }
 
 // blinking lights on model.
