@@ -168,9 +168,28 @@ function animate() {
     if (DEBUG_ENABLED) debugPrint();
 }
 
-// to add
+// shines on letters to brighten them.
 function spotLight() {
-    //var sl = new THREE.SpotLight();
+    // add spotlight that casts shadow onto objects that recieve it
+    var spotLight = new THREE.SpotLight(0xffffff);
+
+    //spotLight.position.set(5, 30, 3);
+    spotLight.position.set(0, 0, 10);
+    spotLight.castShadow = true;
+    spotLight.shadow.radius = 3; // makes the edge blurrier at the expense of making it look like copies
+    spotLight.penumbra = 0.5;
+    spotLight.intensity = 1;
+
+    // make higher res
+    // = 1024 is faster, but edges are more jagged looking
+    spotLight.shadow.mapSize.width = 2048;
+    spotLight.shadow.mapSize.height = 2048;
+
+    scene.add(spotLight);
+
+    // add spotlight helper
+    //var spotLightHelper = new THREE.SpotLightHelper(spotLight);
+    //scene.add(spotLightHelper);
 }
 
 // blinking lights on model.

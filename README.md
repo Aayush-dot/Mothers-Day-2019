@@ -4,6 +4,7 @@
 * Created more detailed beveled letters.
 * Changed color of letters to match background better.
 * Made hamburger menu transparent.
+* Added spotlight
 
 ## v0.2
 * Fixed problem with lights in iOS.
